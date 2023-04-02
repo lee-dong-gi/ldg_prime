@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+#spring:
+#  data:
+#    mongodb:
+#      uri: mongodb://root:root@localhost:27017/admin
+#      database: local
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG

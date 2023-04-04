@@ -1,9 +1,9 @@
-package com.ldg.prime.test.service
+package com.ldg.prime.mongo.service
 
-import com.ldg.prime.test.entity.MenuItem
-import com.ldg.prime.test.entity.Order
-import com.ldg.prime.test.entity.QOrder.order
-import com.ldg.prime.test.repository.OrderRepository
+import com.ldg.prime.mongo.entity.MenuItem
+import com.ldg.prime.mongo.entity.Order
+import com.ldg.prime.mongo.entity.QOrder.order
+import com.ldg.prime.mongo.repository.OrderRepository
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Query.query
 import org.springframework.data.mongodb.core.query.Update

@@ -1,9 +1,8 @@
-package com.ldg.prime.test.entity
+package com.ldg.prime.mongo.entity
 
 import com.querydsl.core.annotations.QueryEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field

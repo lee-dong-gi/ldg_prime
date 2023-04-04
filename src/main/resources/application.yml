@@ -1,11 +1,28 @@
 server:
   port: 8080
 
-#spring:
-#  data:
-#    mongodb:
-#      uri: mongodb://root:root@localhost:27017/admin
-#      database: local
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+  main:
+    allow-bean-definition-overriding: true
+primary:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    jdbc-url: jdbc:mariadb://127.0.0.1:13306/prime?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+secondary:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+
+
 
 logging:
   level:

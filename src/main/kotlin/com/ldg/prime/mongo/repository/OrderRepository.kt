@@ -1,6 +1,6 @@
-package com.ldg.prime.test.repository
+package com.ldg.prime.mongo.repository
 
-import com.ldg.prime.test.entity.Order
+import com.ldg.prime.mongo.entity.Order
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.querydsl.QuerydslPredicateExecutor
 import org.springframework.stereotype.Repository

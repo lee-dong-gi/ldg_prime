@@ -1,8 +1,9 @@
-package com.ldg.prime.test.controller
+package com.ldg.prime.mongo.controller
 
-import com.ldg.prime.test.entity.MenuItem
-import com.ldg.prime.test.repository.OrderRepository
-import com.ldg.prime.test.service.OrderService
+import com.ldg.prime.mongo.entity.MenuItem
+import com.ldg.prime.mongo.repository.OrderRepository
+import com.ldg.prime.mongo.service.OrderService
+import lombok.RequiredArgsConstructor
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

@@ -1,38 +1,32 @@
 package com.ldg.prime.maria.controller
 
-import com.ldg.prime.maria.master.entity.User
-import com.ldg.prime.maria.slave.repository.SlaveUserRepository
-import com.ldg.prime.maria.master.repository.UserRepository
-import com.ldg.prime.maria.slave.entity.R_User
+import com.ldg.prime.maria.master.service.UserService
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserController(
-        var userRepository: UserRepository,
-        var slaveUserRepository: SlaveUserRepository
-) {
+class UserController {
+    private val log = LoggerFactory.getLogger(javaClass)
 
-    @PostMapping("/master/user")
-    fun saveMaster():ResponseEntity<Any?>{
-        val user = User(1,"mtest2","mtest22")
-        return ResponseEntity<Any?>(userRepository.save(user), HttpStatus.OK)
-    }
+    @Autowired
+    lateinit var userService: UserService
 
-    @PostMapping("/slave/user")
-    fun saveSlave():ResponseEntity<Any?>{
-        val user = R_User(2,"stest2","stest22")
-        return ResponseEntity<Any?>(slaveUserRepository.save(user), HttpStatus.OK)
+    @GetMapping("/unified/user")
+    fun unifiedGetAll():ResponseEntity<Any?>{
+        log.error("{} controller get isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
+        return ResponseEntity<Any?>(userService.findAll(), HttpStatus.OK)
     }
 
-    @GetMapping("/master/user")
-    fun getAllMaster():ResponseEntity<Any?>{
-        return ResponseEntity<Any?>(userRepository.findAll(), HttpStatus.OK)
+    @PostMapping("/unified/user")
+    fun unifiedSave(){
+        log.error("{} controller save isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
+        userService.save()
     }
-    @GetMapping("/slave/user")
-    fun getAllSlaveUser():ResponseEntity<Any?>{
-        return ResponseEntity<Any?>(slaveUserRepository.findAll(), HttpStatus.OK)
-    }
+
+
 
 }

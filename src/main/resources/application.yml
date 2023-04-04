@@ -18,7 +18,7 @@ primary:
 secondary:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?useUnicode=true&characterEncoding=utf8
+    jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?readOnly=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: root
 

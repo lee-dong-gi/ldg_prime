@@ -1,11 +1,9 @@
 package com.ldg.prime.maria.master.service
 
-import com.ldg.prime.config.JpaConfig
 import com.ldg.prime.maria.master.entity.User
 import com.ldg.prime.maria.master.repository.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.datasource.lookup.DataSourceLookup
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionSynchronizationManager

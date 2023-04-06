@@ -30,7 +30,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-	//implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
@@ -49,6 +49,9 @@ dependencies {
 	annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor:3.0.5")
 	annotationProcessor ("org.projectlombok:lombok")
 
+	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("com.auth0:java-jwt:3.18.1")
+
 	//maria db
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
@@ -62,6 +65,14 @@ dependencies {
 	//runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group="junit", module="unit")
+	}
+
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-params:5.5.2")
+	testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<KotlinCompile> {
@@ -75,3 +86,8 @@ tasks.withType<KotlinCompile> {
 tasks.named("compileJava") {
 	inputs.files(tasks.named("processResources"))
 }
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
+

@@ -26,7 +26,7 @@ import javax.sql.DataSource
 @EnableTransactionManagement
 @EnableJpaRepositories(
     entityManagerFactoryRef = "masterEntityManagerFactory",
-    basePackages = ["com.ldg.prime.maria.master.repository"] //지정한 경로의 repository 모두 단방향 이중화 설정을 적용
+    basePackages = ["com.ldg.prime.v1.maria.*"] //지정한 경로의 repository 모두 단방향 이중화 설정을 적용
 )
 class JpaConfig {
     @Bean(name = ["masterDataSource"])
@@ -59,7 +59,7 @@ class JpaConfig {
     fun entityManagerFactory(): LocalContainerEntityManagerFactoryBean {
         val entityManagerFactory = LocalContainerEntityManagerFactoryBean()
         entityManagerFactory.dataSource = routingDataSource()
-        entityManagerFactory.setPackagesToScan("com.ldg.prime.maria.master.entity")
+        entityManagerFactory.setPackagesToScan("com.ldg.prime.v1.maria.entity")
         entityManagerFactory.jpaVendorAdapter = HibernateJpaVendorAdapter()
         entityManagerFactory.persistenceUnitName = "prime"
         return entityManagerFactory

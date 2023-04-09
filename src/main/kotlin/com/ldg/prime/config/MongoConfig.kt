@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * https://jsonobject.tistory.com/559 참고
  */
 @Configuration
-@EnableMongoRepositories(basePackages = ["com.ldg.prime.mongo.repository"])
+@EnableMongoRepositories(basePackages = ["com.ldg.prime.v1.mongo.*"])
 class MongoConfig : AbstractMongoClientConfiguration() {
 
     @Bean

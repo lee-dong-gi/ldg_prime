@@ -1,6 +1,6 @@
 package com.ldg.prime.config
 
-import com.ldg.prime.maria.security.JwtFilter
+import com.ldg.prime.v1.security.JwtFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager

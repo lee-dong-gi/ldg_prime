@@ -1,6 +1,6 @@
 package com.ldg.prime.config
 
-import com.ldg.prime.maria.aop.PermitAuthorityValidator
+import com.ldg.prime.v1.common.aop.PermitAuthorityValidator
 import lombok.RequiredArgsConstructor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

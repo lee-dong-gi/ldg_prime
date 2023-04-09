@@ -17,8 +17,9 @@ class CompanyService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @PersistenceContext
-    private lateinit var entityManager: EntityManager
+    fun findAll(): List<Company> {
+        return companyRepository.findAll()
+    }
 
     @Transactional(transactionManager = GlobalConstant.WRITE_ONLY_TM)
     fun register(request: CompanyRegRequest) {
@@ -30,8 +31,6 @@ class CompanyService(
 
             false -> {
                 companyRepository.save(Company(request))
-                entityManager.flush()
-                entityManager.clear()
             }
         }
     }

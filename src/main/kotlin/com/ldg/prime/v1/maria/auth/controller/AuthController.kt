@@ -4,6 +4,9 @@ import com.ldg.prime.v1.maria.auth.dto.request.UserSignInRequest
 import com.ldg.prime.v1.maria.auth.dto.request.UserSignUpRequest
 import com.ldg.prime.v1.maria.auth.enums.Authority
 import com.ldg.prime.v1.common.aop.PermitAuthority
+import com.ldg.prime.v1.common.dto.ListNonPageResult
+import com.ldg.prime.v1.common.dto.ResultUtil
+import com.ldg.prime.v1.maria.entity.User
 import com.ldg.prime.v1.maria.user.service.UserService
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
@@ -18,18 +21,19 @@ class AuthController (val userService: UserService){
 
     @PermitAuthority(Authority.CU)
     @GetMapping("/users")
-    fun findAll():ResponseEntity<Any?>{
-        return ResponseEntity<Any?>(userService.findAll(), HttpStatus.OK)
+    fun findAll():ResponseEntity<ListNonPageResult<Any>>{
+        return ResponseEntity.ok(ResultUtil.success(userService.findAll()))
     }
 
     @PostMapping("/sign-in")
     fun signIn(@Valid @RequestBody request: UserSignInRequest):ResponseEntity<Any?>{
-        return ResponseEntity<Any?>(userService.signIn(request), HttpStatus.OK)
+        return ResponseEntity.ok(ResultUtil.success(userService.signIn(request)))
     }
 
     @PostMapping("/sign-up")
     fun signUp(@Valid @RequestBody request: UserSignUpRequest):ResponseEntity<Any?>{
-        return ResponseEntity<Any?>(userService.signUp(request), HttpStatus.OK)
+        userService.signUp(request)
+        return ResponseEntity.ok(ResultUtil.success())
     }
 
 }

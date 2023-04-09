@@ -53,13 +53,13 @@ class UserService(
     }
 
     @Transactional(readOnly = true, transactionManager = READ_ONLY_TM)
-    fun signIn(request: UserSignInRequest): ResponseEntity<Any?> {
+    fun signIn(request: UserSignInRequest): String? {
         log.info("{} user reg req", request)
         val user: User = userRepository.findByUserId(request.userId)
             .orElseThrow { throw UsernameNotFoundException("존재하지 않는 userId 입니다.") }
         when (passwordEncoder.matches(request.userPassword, user.userPassword)) {
             true -> {
-                return ResponseEntity<Any?>(jwtUtils.createToken(request.userId), HttpStatus.OK)
+                return jwtUtils.createToken(request.userId)
             }
 
             false -> {

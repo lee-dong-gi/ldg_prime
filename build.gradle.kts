@@ -37,6 +37,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+	implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("com.querydsl:querydsl-mongodb")

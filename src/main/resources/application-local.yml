@@ -3,31 +3,37 @@ server:
 
 spring:
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
+    open-in-view: false
     generate-ddl: true
+#    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        show_sql: true
+        format_sql: true
   main:
     allow-bean-definition-overriding: true
-primary:
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    jdbc-url: jdbc:mariadb://127.0.0.1:13306/prime?useUnicode=true&characterEncoding=utf8
-    username: root
-    password: root
-secondary:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?readOnly=true&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: root
-
-
+    master:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://127.0.0.1:13306/prime?useUnicode=true&characterEncoding=utf8
+      username: root
+      password: root
+    slave:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?readOnly=true&useUnicode=true&characterEncoding=utf8
+      username: root
+      password: root
 
 logging:
   level:
     org:
+      hibernate:
+        type: trace
       springframework:
+        transaction: DEBUG
         data:
           mongodb:
             core:

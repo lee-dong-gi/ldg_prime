@@ -1,5 +1,7 @@
 package com.ldg.prime.maria.utils
 
+import com.ldg.prime.maria.common.GlobalConstant.EXP_TIME
+import com.ldg.prime.maria.common.GlobalConstant.JWT_SECRET_KEY
 import com.ldg.prime.maria.security.UserDetailsServiceImpl
 
 import io.jsonwebtoken.Claims
@@ -14,20 +16,22 @@ import java.util.*
 
 @Component
 class JwtUtils(private val userDetailsServiceImpl: UserDetailsServiceImpl) {
-
-    val EXP_TIME: Long = 1000L * 60 * 3
-    val JWT_SECRET: String = "secret"
-    val SIGNATURE_ALG: SignatureAlgorithm = SignatureAlgorithm.HS256
-
-    fun createToken(username: String): String {
+    fun createToken(userId: String): String {
         val claims: Claims = Jwts.claims();
-        claims["username"] = username
+        claims["userId"] = userId
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(Date(System.currentTimeMillis()+ EXP_TIME))
-                .signWith(SIGNATURE_ALG, JWT_SECRET)
+                .setExpiration(createExpiredDate())
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact()
+    }
+
+    private fun createExpiredDate(): Date? {
+        val calendar = Calendar.getInstance()
+        //calendar.add(Calendar.HOUR, 8);               // 8시간
+        calendar.add(Calendar.DATE, 7) // 1일
+        return calendar.time
     }
 
     fun validation(token: String) : Boolean {
@@ -36,20 +40,19 @@ class JwtUtils(private val userDetailsServiceImpl: UserDetailsServiceImpl) {
         return exp.after(Date())
     }
 
-    fun parseUsername(token: String): String {
+    fun parseUserId(token: String): String {
         val claims: Claims = getAllClaims(token)
-        return claims["username"] as String
+        return claims["userId"] as String
     }
 
-    fun getAuthentication(username: String): Authentication {
-        val userDetails: UserDetails = userDetailsServiceImpl.loadUserByUsername(username)
-
+    fun getAuthentication(userId: String): Authentication {
+        val userDetails: UserDetails = userDetailsServiceImpl.loadUserByUsername(userId)
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 
     private fun getAllClaims(token: String): Claims {
         return Jwts.parser()
-                .setSigningKey(JWT_SECRET)
+                .setSigningKey(JWT_SECRET_KEY)
                 .parseClaimsJws(token)
                 .body
     }

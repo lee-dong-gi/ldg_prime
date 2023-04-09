@@ -10,7 +10,6 @@ buildscript {
 
 repositories {
 	mavenCentral()
-	//maven { url = uri("https://jitpack.io") }
 	maven("https://plugins.gradle.org/m2/")
 }
 
@@ -51,6 +50,11 @@ dependencies {
 
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("com.auth0:java-jwt:3.18.1")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+
+	// https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.codec
+	implementation("org.apache.directory.studio:org.apache.commons.codec:1.8")
+
 
 	//maria db
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
@@ -91,3 +95,8 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+allOpen {// 이거 안하면 entity class를 모두 직접 open 선언해야함
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
+}

@@ -1,5 +1,7 @@
 package com.ldg.prime.mongo.controller
 
+import com.ldg.prime.maria.aop.PermitAuthority
+import com.ldg.prime.maria.common.Authority
 import com.ldg.prime.mongo.entity.MenuItem
 import com.ldg.prime.mongo.repository.OrderRepository
 import com.ldg.prime.mongo.service.OrderService
@@ -19,6 +21,8 @@ class OrderController(
         orderService.orderMenu(tableId,item)
         return ResponseEntity<Any?>("good", HttpStatus.OK)
     }
+
+    @PermitAuthority(Authority.CU)
     @GetMapping("/store/name/orders")
     fun getAllOrder():ResponseEntity<Any?>{
         return ResponseEntity<Any?>(orderRepository.findAll(), HttpStatus.OK)

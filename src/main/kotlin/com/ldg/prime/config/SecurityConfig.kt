@@ -1,7 +1,6 @@
 package com.ldg.prime.config
 
 import com.ldg.prime.maria.security.JwtFilter
-import com.ldg.prime.maria.security.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -16,8 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig(
-        private val userDetailsServiceImpl: UserDetailsServiceImpl,
+class SecurityConfig(
         private val jwtAuthenticationFilter: JwtFilter
 ){
 
@@ -29,14 +27,17 @@ class WebSecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
         http.csrf().disable()
         http.authorizeHttpRequests()
-                .requestMatchers("/api/members/**").authenticated()
-                .requestMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/store/**").authenticated()
+                .requestMatchers("/store/**").hasAnyRole("DM", "CM")
+//                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+                .formLogin().disable()
         return http.build()
     }
 

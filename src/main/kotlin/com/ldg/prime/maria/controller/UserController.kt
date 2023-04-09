@@ -1,32 +1,35 @@
 package com.ldg.prime.maria.controller
 
+import com.ldg.prime.maria.aop.PermitAuthority
+import com.ldg.prime.maria.common.Authority
+import com.ldg.prime.maria.dto.request.UserSignInRequest
+import com.ldg.prime.maria.dto.request.UserSignUpRequest
 import com.ldg.prime.maria.master.service.UserService
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserController {
+@RequestMapping("/api/v1/auth")
+class UserController (val userService: UserService){
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Autowired
-    lateinit var userService: UserService
-
-    @GetMapping("/unified/user")
-    fun unifiedGetAll():ResponseEntity<Any?>{
-        log.error("{} controller get isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
+    @PermitAuthority(Authority.DM)
+    @GetMapping("/users")
+    fun findAll():ResponseEntity<Any?>{
         return ResponseEntity<Any?>(userService.findAll(), HttpStatus.OK)
     }
 
-    @PostMapping("/unified/user")
-    fun unifiedSave(){
-        log.error("{} controller save isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
-        userService.save()
+    @PostMapping("/sign-in")
+    fun signIn(@Valid @RequestBody request: UserSignInRequest):ResponseEntity<Any?>{
+        return ResponseEntity<Any?>(userService.signIn(request), HttpStatus.OK)
     }
 
-
+    @PostMapping("/sign-up")
+    fun signUp(@Valid @RequestBody request: UserSignUpRequest):ResponseEntity<Any?>{
+        return ResponseEntity<Any?>(userService.signUp(request), HttpStatus.OK)
+    }
 
 }

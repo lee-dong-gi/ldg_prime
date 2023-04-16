@@ -68,7 +68,7 @@ class JpaConfig {
     class RoutingDataSource : AbstractRoutingDataSource() {
         private val log = LoggerFactory.getLogger(javaClass)
         public override fun determineCurrentLookupKey(): Any {
-            log.error("{} determineCurrentLookupKey isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
+            //log.error("{} determineCurrentLookupKey isCurrentTransactionReadOnly", TransactionSynchronizationManager.isCurrentTransactionReadOnly().toString())
             return if (TransactionSynchronizationManager.isCurrentTransactionReadOnly()) "readDataSource" else "writeDataSource"
         }
     }

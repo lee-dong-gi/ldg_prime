@@ -2,6 +2,16 @@ server:
   port: 8080
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: foo
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   data:
     redis:
       host: 127.0.0.1
@@ -23,7 +33,7 @@ spring:
   jpa:
     open-in-view: false
     generate-ddl: true
-#    show-sql: true
+    show-sql: true
     hibernate:
       ddl-auto: none
     properties:
@@ -45,14 +55,18 @@ spring:
       username: root
       password: root
 
+#logging:
+#  config: ${conf.logging}/BAKC_logback-spring
+
 logging:
   level:
     org:
       hibernate:
         type: trace
       springframework:
-        transaction: DEBUG
+        #transaction: DEBUG
         data:
           mongodb:
             core:
               MongoTemplate: DEBUG
+

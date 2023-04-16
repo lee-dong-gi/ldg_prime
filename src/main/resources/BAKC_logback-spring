@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="1 minutes">
+
+    <!-- 콘솔 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <springProfile name="local">
+        <!-- 날짜별 & 사이즈별 파일 -->
+        <appender name="FILE_SIZE_DAILY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>D:\2023PrivateProject\log\prime.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>D:\2023PrivateProject\log\server.log-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 200MB -->
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>7</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%X{requestId} %d{yyyy:MM:dd HH:mm:ss.SSS} [%thread] %X{req.ip} %-5level %logger{36}[%line] -
+                    %msg%n
+                </pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="dev">
+        <!-- 날짜별 & 사이즈별 파일 -->
+        <appender name="FILE_SIZE_DAILY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/data/logs/big4_log/big4_log.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>/data/logs/big4_log/server-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 200MB -->
+                    <maxFileSize>1000MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>1</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%X{requestId} %d{yyyy:MM:dd HH:mm:ss.SSS} [%thread] %X{req.ip} %-5level %logger{36}[%line] -
+                    %msg%n
+                </pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="prod, stg">
+        <!-- 날짜별 & 사이즈별 파일 -->
+        <appender name="FILE_SIZE_DAILY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/data/logs/big4_log/big4_log.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>/data/logs/big4_log/server-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 200MB -->
+                    <maxFileSize>1000MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>20</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%X{requestId} %d{yyyy:MM:dd HH:mm:ss.SSS} [%thread] %X{req.ip} %-5level %logger{36}[%line] -
+                    %msg%n
+                </pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="local">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+        </root>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="FILE_SIZE_DAILY"/>
+        </root>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+    </springProfile>
+
+    <springProfile name="stg">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE_SIZE_DAILY"/>
+        </root>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="ERROR">
+            <appender-ref ref="FILE_SIZE_DAILY"/>
+        </root>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
+    </springProfile>
+
+</configuration>

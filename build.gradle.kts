@@ -34,7 +34,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -64,6 +63,11 @@ dependencies {
 
 	//maria db
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka") // spring-kafka
+	//implementation("org.apache.kafka:kafka-streams:3.2.3") // kafka-streams
+	//implementation("org.apache.kafka:kafka-clients:3.2.3") // kafka-clients
 
 	// query dsl
 	val querydslVersion = "5.0.0"

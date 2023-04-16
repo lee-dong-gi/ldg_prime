@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -58,6 +59,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.codec
 	implementation("org.apache.directory.studio:org.apache.commons.codec:1.8")
 
+	//redis
+	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 
 	//maria db
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")

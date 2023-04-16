@@ -2,6 +2,24 @@ server:
   port: 8080
 
 spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: test1234
+#      cluster:
+#        nodes:
+#          127.0.0.1:6380,
+#          127.0.0.1:6381,
+#          127.0.0.1:6382
+#        max-redirects: 5
+#      lettuce:
+#        pool:
+#          enabled: true
+#          max-active: 8
+#          max-wait: 1000
+#          max-idle: 500
+
   jpa:
     open-in-view: false
     generate-ddl: true

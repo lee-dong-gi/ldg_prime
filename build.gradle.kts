@@ -26,6 +26,7 @@ group = "com.ldg"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-graphql")
@@ -35,6 +36,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	implementation ("org.springframework.boot:spring-boot-starter-thymeleaf") // thymeleaf
+	implementation ("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect") // thymeleaf fragment-layout support
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")

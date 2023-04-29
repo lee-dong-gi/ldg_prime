@@ -27,7 +27,7 @@ class Order {
 
     @Field(name="menus")
     @OneToMany(mappedBy = "order")
-    var items: List<MenuItem> = mutableListOf()
+    var items: MutableList<MenuItem> = mutableListOf()
 
     @Field(name="status")
     var status: Int = 0

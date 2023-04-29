@@ -2,6 +2,19 @@ server:
   port: 8080
 
 spring:
+  mvc:
+    view:
+      prefix: classpath:templates/views
+      suffix: .html
+  thymeleaf:
+    prefix: classpath:templates
+    suffix: .html
+    cache: false
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -54,6 +67,7 @@ spring:
       jdbc-url: jdbc:mariadb://127.0.0.1:23306/prime?readOnly=true&useUnicode=true&characterEncoding=utf8
       username: root
       password: root
+
 
 #logging:
 #  config: ${conf.logging}/BAKC_logback-spring

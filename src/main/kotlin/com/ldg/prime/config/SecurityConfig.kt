@@ -22,12 +22,20 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
+    /**
+     *
+     */
     @Bean
     @Throws(java.lang.Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
         http.csrf().disable()
         http.authorizeHttpRequests()
+                .requestMatchers("/chat**").permitAll()
+                .requestMatchers("/topic/**").permitAll()
+                .requestMatchers("/ws/**").permitAll()
+                .requestMatchers("/static/**").permitAll() // 정적 파일 경로 허용 설정
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/web/v1/**").permitAll()
                 .requestMatchers("/store/**").authenticated()
                 .requestMatchers("/store/**").hasAnyRole("DM", "CM")
 //                .requestMatchers("/admin/**").hasRole("ADMIN")

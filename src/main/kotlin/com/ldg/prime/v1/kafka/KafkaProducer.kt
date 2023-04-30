@@ -1,7 +1,6 @@
 package com.ldg.prime.v1.kafka
 
 import lombok.RequiredArgsConstructor
-import org.apache.kafka.common.protocol.Message
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service

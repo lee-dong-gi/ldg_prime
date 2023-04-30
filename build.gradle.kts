@@ -70,8 +70,8 @@ dependencies {
 
 	// kafka
 	implementation("org.springframework.kafka:spring-kafka") // spring-kafka
-	//implementation("org.apache.kafka:kafka-streams:3.2.3") // kafka-streams
-	//implementation("org.apache.kafka:kafka-clients:3.2.3") // kafka-clients
+	implementation("org.apache.kafka:kafka-streams:3.2.3") // kafka-streams
+	implementation("org.apache.kafka:kafka-clients:3.2.3") // kafka-clients
 
 	// query dsl
 	val querydslVersion = "5.0.0"

@@ -18,6 +18,7 @@ class KafkaProcess : InitializingBean {
     override fun afterPropertiesSet() {
         operators.apply {
             put(Operator.DATA_PREPARE) { param -> dataPrepare(param)}
+            put(Operator.DATA_PREPARE) { param -> dataPrepare(param)}
             put(Operator.CALC) { param -> calc(param) }
             put(Operator.LOGGING) { param -> logging(param) }
         }

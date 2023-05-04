@@ -25,7 +25,7 @@ class KafkaProcess : InitializingBean {
     }
 
     fun dataPrepare(kafkaProcessParamPackage: KafkaProcessParamPackage): KafkaProcessParamPackage {
-        log.error("dataPrepare :: " + kafkaProcessParamPackage.kafkaRawData)
+        //log.error("dataPrepare :: " + kafkaProcessParamPackage.kafkaRawData)
         return kafkaProcessParamPackage
     }
 
@@ -35,7 +35,7 @@ class KafkaProcess : InitializingBean {
     }
 
     fun logging(kafkaProcessParamPackage: KafkaProcessParamPackage): KafkaProcessParamPackage {
-        log.error("logging :: "  + kafkaProcessParamPackage.kafkaRawData)
+        //log.error("logging :: "  + kafkaProcessParamPackage.kafkaRawData)
         return kafkaProcessParamPackage
     }
 

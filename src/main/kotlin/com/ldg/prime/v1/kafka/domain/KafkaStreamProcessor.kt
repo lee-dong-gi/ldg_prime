@@ -48,7 +48,7 @@ class KafkaStreamProcessor(
         streamReset()
     }
 
-    private fun getKStreamsConfig(): Properties {
+    fun getKStreamsConfig(): Properties {
         val props = Properties()
         props[StreamsConfig.APPLICATION_ID_CONFIG] = "foo"
         props[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapAddress
@@ -145,7 +145,7 @@ class KafkaStreamProcessor(
                 doProcess(bufferQueue, false)
             }
         }
-        
+
     }
 
     /**
@@ -178,15 +178,16 @@ class KafkaStreamProcessor(
     }
 
     fun doProcess(bufferQueue: Queue<String?>, isFailed: Boolean) {
-        val target = bufferQueue.poll() // 다른 곳에서 선점하지 못하도록 미리 빼둠
+        val target = bufferQueue.poll() ?: return // 다른 곳에서 선점하지 못하도록 미리 빼둠
+
         try {
-            val dataPackage = target?.let { KafkaProcessParamPackage(it) } ?: KafkaProcessParamPackage("")
+            val dataPackage = KafkaProcessParamPackage(target)
             KafkaProcess.Operator.values().forEach { type -> kafkaProcess.doProcess(dataPackage, type) }
         } catch (e: Exception) {
             if (isFailed) {
-                failBufferQueue.add(target) // 실패 버퍼에 집어넣음
-            } else {
                 log.error("failed target :: {}$target") // 실패 버퍼에서도 실패하면 그냥 실패 처리
+            } else {
+                failBufferQueue.add(target) // 실패 버퍼에 집어넣음
             }
         }
     }

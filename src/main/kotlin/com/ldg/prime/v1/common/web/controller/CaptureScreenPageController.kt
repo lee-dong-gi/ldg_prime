@@ -11,4 +11,10 @@ class CaptureScreenPageController {
     fun captureScreen(): String? {
         return "/views/captureScreen/captureScreen"
     }
+
+    @GetMapping("/external")
+    fun externalCaptureScreen(): String? {
+        return "/views/captureScreen/externalCaptureScreen"
+    }
+
 }

@@ -35,11 +35,14 @@ import kotlin.collections.LinkedHashMap
 @EnableScheduling
 class KafkaStreamProcessor(
     val streamsInfo: KafkaStreamsInfo,
-    val kafkaProcess: KafkaProcess,
-    val kafkaCaptureScreenController: KafkaCaptureScreenController
+    val kafkaProcess: KafkaProcess
 ) : InitializingBean {
     private val log = LoggerFactory.getLogger(javaClass)
     final val bufferQueue: Queue<ByteArray?> = ConcurrentLinkedQueue()
+
+    fun getQueue(): Queue<ByteArray?>{
+        return this.bufferQueue
+    }
 
     @Value(value = "\${spring.kafka.bootstrap-servers}")
     private val bootstrapAddress: String? = null
@@ -151,7 +154,7 @@ class KafkaStreamProcessor(
     @Async("kafkaProcessThreadPoolTaskExecutor")
     fun process() {
         beforeProcessForCheck(bufferQueue).let { it: Boolean ->
-            if (it){
+            if (it) {
                 doProcess(bufferQueue)
             }
         }

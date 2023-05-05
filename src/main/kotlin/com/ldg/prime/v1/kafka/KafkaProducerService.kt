@@ -1,6 +1,5 @@
 package com.ldg.prime.v1.kafka
 
-import com.ldg.prime.v1.kafka.domain.KafkaStreamProcessor
 import lombok.RequiredArgsConstructor
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.Producer
@@ -9,51 +8,42 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
-import java.io.BufferedReader
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStreamReader
+import java.awt.Rectangle
+import java.awt.Robot
+import java.awt.Toolkit
+import java.io.*
 import java.util.*
+import javax.imageio.ImageIO
 
 
 @Service
 @RequiredArgsConstructor
-class KafkaProducerService (
-    val kafkaTemplate: KafkaTemplate<String, String>
-){
+class KafkaProducerService(
+    val kafkaTemplate: KafkaTemplate<String, ByteArray>
+) {
     private val log = LoggerFactory.getLogger(javaClass)
+
     @Value(value = "\${spring.kafka.bootstrap-servers}")
     private val bootstrapAddress: String? = null
 
     fun sendMessage(message: String) {
         log.info("Produce message : {}", message)
-        kafkaTemplate.send(TOPIC, message)
+        kafkaTemplate.send(TOPIC, message.toByteArray())
     }
 
-    fun sendFile(filePath: String){
-        val props = Properties()
-        props["bootstrap.servers"] = bootstrapAddress
-        props["key.serializer"] = "org.apache.kafka.common.serialization.StringSerializer"
-        props["value.serializer"] = "org.apache.kafka.common.serialization.StringSerializer"
+    fun sendCaptureScreen(byteArray: ByteArray) {
+//        kafkaTemplate.send(TOPIC,captureScreen())
+        kafkaTemplate.send(TOPIC, byteArray)
+    }
 
-        val producer: Producer<String, String> = KafkaProducer(props)
-
-        try {
-            FileInputStream(filePath).use { inputStream ->
-                InputStreamReader(inputStream).use { inputStreamReader ->
-                    BufferedReader(inputStreamReader).use { reader ->
-                        var line: String?
-                        while (reader.readLine().also { line = it } != null) {
-                            producer.send(ProducerRecord(TOPIC, line))
-                        }
-                    }
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            producer.close()
-        }
+    private fun captureScreen(): ByteArray {
+        val robot = Robot()
+        val screenSize = Toolkit.getDefaultToolkit().screenSize
+        val captureSize = Rectangle(0, 0, screenSize.width, screenSize.height)
+        val capture = robot.createScreenCapture(captureSize)
+        val outputStream = ByteArrayOutputStream()
+        ImageIO.write(capture, "png", outputStream)
+        return outputStream.toByteArray()
     }
 
     companion object {

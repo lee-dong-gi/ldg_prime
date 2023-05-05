@@ -10,5 +10,6 @@ import org.springframework.context.annotation.ComponentScan
 class PrimeApplication
 
 fun main(args: Array<String>) {
+    System.setProperty("java.awt.headless", "false")
     runApplication<PrimeApplication>(*args)
 }

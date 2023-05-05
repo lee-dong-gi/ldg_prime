@@ -30,7 +30,8 @@ class KafkaProcess : InitializingBean {
     }
 
     fun calc(kafkaProcessParamPackage: KafkaProcessParamPackage): KafkaProcessParamPackage {
-        log.error("calc :: "  + kafkaProcessParamPackage.kafkaRawData)
+        log.error("string :: "  + kafkaProcessParamPackage.kafkaRawData)
+        log.error("byte to string :: "  + java.lang.String(kafkaProcessParamPackage.kafkaRawData))
         return kafkaProcessParamPackage
     }
 

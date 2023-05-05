@@ -1,8 +1,12 @@
 package com.ldg.prime.v1.kafka.domain
 
+import com.ldg.prime.v1.kafka.KafkaCaptureScreenController
 import lombok.RequiredArgsConstructor
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.Serdes
+import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.StreamsConfig
@@ -15,21 +19,27 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.collections.LinkedHashMap
 
 @Component
 @RequiredArgsConstructor
+@EnableScheduling
 class KafkaStreamProcessor(
     val streamsInfo: KafkaStreamsInfo,
-    val kafkaProcess: KafkaProcess
+    val kafkaProcess: KafkaProcess,
+    val kafkaCaptureScreenController: KafkaCaptureScreenController
 ) : InitializingBean {
     private val log = LoggerFactory.getLogger(javaClass)
-    final val bufferQueue: Queue<String?> = ConcurrentLinkedQueue()
-    private final val failBufferQueue: Queue<String?> = ConcurrentLinkedQueue()
+    final val bufferQueue: Queue<ByteArray?> = ConcurrentLinkedQueue()
 
     @Value(value = "\${spring.kafka.bootstrap-servers}")
     private val bootstrapAddress: String? = null
@@ -53,7 +63,7 @@ class KafkaStreamProcessor(
         props[StreamsConfig.APPLICATION_ID_CONFIG] = "foo"
         props[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapAddress
         props[StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG] = Serdes.String().javaClass.name
-        props[StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG] = Serdes.String().javaClass.name
+        props[StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG] = Serdes.ByteArray().javaClass.name
         props[StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG)] = 50
         props[StreamsConfig.NUM_STREAM_THREADS_CONFIG] = 1
         props[StreamsConfig.COMMIT_INTERVAL_MS_CONFIG] = 0
@@ -63,10 +73,10 @@ class KafkaStreamProcessor(
     private fun streamReset() {
         val properties: Properties = getKStreamsConfig()
         val builder = StreamsBuilder()
-        val stream = builder.stream<String, String>("exam-topic")
+        val stream = builder.stream<String, ByteArray>("exam-topic")
         stream.process(
-            ProcessorSupplier<String, String, Void, Void> {
-                object : Processor<String?, String?, Void?, Void?> {
+            ProcessorSupplier<String, ByteArray, Void, Void> {
+                object : Processor<String?, ByteArray?, Void?, Void?> {
                     override fun init(context: ProcessorContext<Void?, Void?>) {
                         try {
                             super.init(context)
@@ -76,11 +86,11 @@ class KafkaStreamProcessor(
                         }
                     }
 
-                    override fun process(record: Record<String?, String?>) {
+                    override fun process(record: Record<String?, ByteArray?>) {
                         try {
                             loadingBuffer(bufferQueue, record).let { it: Boolean ->
                                 if (it) {
-                                    process()
+                                    //process()
                                 }
                             }
                         } catch (e: Exception) {
@@ -97,11 +107,11 @@ class KafkaStreamProcessor(
                         Thread.sleep(200)
                     }
 
-                    fun loadingBuffer(queue: Queue<String?>, record: Record<String?, String?>): Boolean {
+                    fun loadingBuffer(queue: Queue<ByteArray?>, record: Record<String?, ByteArray?>): Boolean {
                         queue.add(record.value())
 
                         // 무조건 add 되고나서 pause(데이터 누락 방지)
-                        if (bufferQueue.size == 50
+                        /*if (bufferQueue.size == 50
                             || bufferQueue.size > 50
                         ) {
                             var pauseFlag = true
@@ -111,7 +121,7 @@ class KafkaStreamProcessor(
                                     pauseFlag = false
                                 }
                             }
-                        }
+                        }*/
                         return true
                     }
                 }
@@ -142,26 +152,14 @@ class KafkaStreamProcessor(
     fun process() {
         beforeProcessForCheck(bufferQueue).let { it: Boolean ->
             if (it){
-                doProcess(bufferQueue, false)
+                doProcess(bufferQueue)
             }
         }
 
     }
 
-    /**
-     *  실패 버퍼 처리
-     */
-    @Scheduled(fixedDelay = 100) // 80 이하로 내리면 async thread deadLock 현상 발생
-    @Async("kafkaProcessThreadPoolTaskExecutor")
-    fun failedProcess() {
-        beforeProcessForCheck(failBufferQueue).let { it: Boolean ->
-            if (it) {
-                doProcess(failBufferQueue, true)
-            }
-        }
-    }
 
-    fun beforeProcessForCheck(targetBufferQueue: Queue<String?>): Boolean {
+    fun beforeProcessForCheck(targetBufferQueue: Queue<ByteArray?>): Boolean {
         //최대 Thread 개수 체크
         val threadSet = Thread.getAllStackTraces()
             .keys
@@ -177,18 +175,14 @@ class KafkaStreamProcessor(
         return !targetBufferQueue.isEmpty()
     }
 
-    fun doProcess(bufferQueue: Queue<String?>, isFailed: Boolean) {
-        val target = bufferQueue.poll() ?: return // 다른 곳에서 선점하지 못하도록 미리 빼둠
+    fun doProcess(bufferQueue: Queue<ByteArray?>) {
+        val target = bufferQueue.poll() ?: return
 
         try {
             val dataPackage = KafkaProcessParamPackage(target)
             KafkaProcess.Operator.values().forEach { type -> kafkaProcess.doProcess(dataPackage, type) }
         } catch (e: Exception) {
-            if (isFailed) {
-                log.error("failed target :: {}$target") // 실패 버퍼에서도 실패하면 그냥 실패 처리
-            } else {
-                failBufferQueue.add(target) // 실패 버퍼에 집어넣음
-            }
+            log.error("failed target :: {}$target")
         }
     }
 }

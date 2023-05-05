@@ -30,6 +30,7 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
         http.csrf().disable()
         http.authorizeHttpRequests()
+                .requestMatchers("/screen**").permitAll()
                 .requestMatchers("/chat**").permitAll()
                 .requestMatchers("/topic/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()

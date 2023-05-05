@@ -2,6 +2,7 @@ package com.ldg.prime.config
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.ByteArraySerializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,34 +19,36 @@ class KafkaConfig {
     private lateinit var kafkaProperties: KafkaProperties
 
     @Bean
-    fun producerFactory(): ProducerFactory<String, String> {
+    fun producerFactory(): ProducerFactory<String, ByteArray> {
         val configs: MutableMap<String, Any> = HashMap()
         configs[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaProperties.bootstrapServers
         configs[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
-        configs[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
+//        configs[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
+        configs[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = ByteArraySerializer::class.java
         return DefaultKafkaProducerFactory(configs)
     }
 
     @Bean
-    fun kafkaTemplate(): KafkaTemplate<String, String> {
+    fun kafkaTemplate(): KafkaTemplate<String, ByteArray> {
         return KafkaTemplate(producerFactory())
     }
 
     @Bean
-    fun consumerFactory(): ConsumerFactory<String, String> {
+    fun consumerFactory(): ConsumerFactory<String, ByteArray> {
         val props: MutableMap<String, Any> = java.util.HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaProperties.bootstrapServers
         props[ConsumerConfig.GROUP_ID_CONFIG] = kafkaProperties.consumer.groupId
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+//        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = ByteArraySerializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = kafkaProperties.consumer.autoOffsetReset
         props[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = false
         return DefaultKafkaConsumerFactory(props)
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, ByteArray>()
         factory.consumerFactory = consumerFactory()
         return factory
     }
